@@ -1,0 +1,22 @@
+{
+  "name": "blueprint-graph-in-javascript",
+  "version": "1.0.0",
+  "description": "Create nodes, join the graph, wait for the result. Just like Blueprint. Asynchronous for everythings.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dicarne/blueprint-graph-in-Javascript.git"
+  },
+  "author": "dicarne",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dicarne/blueprint-graph-in-Javascript/issues"
+  },
+  "homepage": "https://github.com/dicarne/blueprint-graph-in-Javascript#readme",
+  "devDependencies": {
+    "typescript": "^3.9.7"
+  }
+}
