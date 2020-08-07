@@ -1,37 +1,28 @@
 import { NodeRuntime } from ".";
 
-interface NumberNode extends NodeRuntime {
-  out: {
-    Value: string;
+class NumberNode_ extends NodeRuntime<NumberNode_> {
+  out = {
+    Value: "value",
   };
 }
-const _NumberNode_out = {
-  Value: "value",
-};
+
 export function NumberNode(value: number, name?: string) {
-  let nt = new NodeRuntime(async (self) => {
+  let nt = new NumberNode_(async (self: NumberNode_) => {
     self.sendToPort("value", value);
-  }, name) as NumberNode;
-  nt.out = _NumberNode_out;
+  }, name);
   return nt;
 }
 
-interface CalcNumNode extends NodeRuntime {
-  in: { A: string; B: string };
-  out: { Output: string };
+class CalcNumNode_ extends NodeRuntime<CalcNumNode_> {
+  in = { A: "A", B: "B" };
+  out = { Output: "value" };
 }
-const _CalcNumNode_in = {
-  A: "A",
-  B: "B",
-};
-const _CalcNumNode_out = {
-  Output: "value",
-};
+
 export function CalcNumNode(
   calcType: "+" | "-" | "*" | "/" | "**",
   name?: string
 ) {
-  let rt = new NodeRuntime(async (self: CalcNumNode) => {
+  let rt = new CalcNumNode_(async (self: CalcNumNode_) => {
     let from1 = (await self.getFromPortOptional(self.in.A)) || 0;
     let from2 = (await self.getFromPortOptional(self.in.B)) || 0;
     switch (calcType) {
@@ -54,31 +45,27 @@ export function CalcNumNode(
         throw "unknown operator: [node]";
     }
   }, name);
-  let mt = rt as CalcNumNode;
-  mt.in = _CalcNumNode_in;
-  mt.out = _CalcNumNode_out;
-  return mt;
+
+  return rt;
 }
 
-interface OutputNode extends NodeRuntime {
-  in: { Input: string };
+class LogNode_ extends NodeRuntime<LogNode_> {
+  in = { Input: "input" };
 }
-const _OutputNode_in = { Input: "input" };
-export function OutputNode(name?: string) {
-  let nt = new NodeRuntime(async (self) => {
+const _LogNode_in = { Input: "input" };
+export function LogNode(name?: string) {
+  let nt = new LogNode_(async (self: LogNode_) => {
     let data = await self.getFromPort("input");
     console.log(data);
-  }, name) as OutputNode;
-  nt.in = _OutputNode_in;
+  }, name);
   return nt;
 }
 
-interface ForLoopNode extends NodeRuntime {
-  out: {
-    index: string;
+class ForLoopNode_ extends NodeRuntime<ForLoopNode_> {
+  out = {
+    index: "index",
   };
 }
-const _ForP = { index: "index" };
 /**
  * It works like: `let i = from; i < to; i++`
  * if to is undefined, it works like: `let i = 0; i < from; i++`
@@ -86,23 +73,25 @@ const _ForP = { index: "index" };
  * @param to like: `i < to`
  */
 export function ForLoopNode(from: number, to?: number) {
+  let too = 0;
   if (to === undefined) {
-    to = from;
+    too = from;
     from = 0;
+  } else {
+    too = to;
   }
-  let nt = new NodeRuntime(async (self) => {
-    for (let index = from; index < to; index++) {
-      self.sendToPort(nt.out.index, index);
-      await self.waitPortUsed(nt.out.index);
+  let nt = new ForLoopNode_(async (self: ForLoopNode_) => {
+    for (let index = from; index < too; index++) {
+      self.sendToPort(self.out.index, index);
+      await self.waitPortUsed(self.out.index);
     }
-  }) as ForLoopNode;
-  nt.out = _ForP;
+  });
   return nt;
 }
 
 export function TestForBody() {
   return new NodeRuntime(async (self) => {
-    let index = await self.getFromPort("exec_signal");
+    let index = await self.getFromPort<any>("exec_signal");
     setTimeout(() => {
       console.log("hello" + index.toString());
     }, 1000);
