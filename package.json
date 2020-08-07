@@ -1,6 +1,6 @@
 {
   "name": "blueprint-graph",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create nodes, join the graph, wait for the result. Just like Blueprint. Asynchronous for everythings.",
   "main": "./dist/index.js",
   "scripts": {
