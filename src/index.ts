@@ -196,7 +196,14 @@ export class NodeRuntime<T extends NodeRuntime<T>> {
     let myport = this.output_port.get(myOutputPortName);
     let another_newport = newPort(anotherNode.name, inputPortName);
     if (!myport) this.output_port.set(myOutputPortName, [another_newport]);
-    else myport.push(another_newport);
+    else if (
+      myport.findIndex(
+        (v) =>
+          v.targetNode === anotherNode.name && v.targetPort === inputPortName
+      ) === -1
+    ) {
+      myport.push(another_newport);
+    }
 
     anotherNode.input_port.set(
       inputPortName,
@@ -221,6 +228,22 @@ export class NodeRuntime<T extends NodeRuntime<T>> {
             anotherNode.input_port.delete(p.targetPort);
           }
         }
+      }
+    }
+  };
+  removeOneLink = (
+    portName: string,
+    remoteNode: string,
+    remotePort: string
+  ) => {
+    let port = this.output_port.get(portName);
+    this.waitting_port_data_used.delete(portName);
+    if (port) {
+      let remoteIndex = port.findIndex(
+        (v) => v.targetNode === remoteNode && v.targetPort === remotePort
+      );
+      if(remoteIndex !== -1){
+        port.splice(remoteIndex, 1)
       }
     }
   };

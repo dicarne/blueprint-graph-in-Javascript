@@ -68,6 +68,7 @@ export declare class NodeRuntime<T extends NodeRuntime<T>> {
      * @param portName
      */
     removeOutputLink: (portName: string) => void;
+    removeOneLink: (portName: string, remoteNode: string, remotePort: string) => void;
 }
 /**
  * Add a new node to the graph.
