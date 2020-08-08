@@ -18,11 +18,11 @@ function test() {
         let node2 = _1.addNewNode(ctx, basic_lib_1.NumberNode(4));
         let nodemmul = _1.addNewNode(ctx, basic_lib_1.CalcNumNode("**"));
         let show = _1.addNewNode(ctx, basic_lib_1.LogNode());
-        let output = _1.addNewNode(ctx, _1.OutPutNode());
+        let output = _1.addNewNode(ctx, new _1.OutPutNode());
         node1.linkTo(node1.out.Value, nodemmul, nodemmul.in.A);
         node2.linkTo(node2.out.Value, nodemmul, nodemmul.in.B);
         nodemmul.linkTo(nodemmul.out.Output, show, show.in.Input);
-        nodemmul.linkTo(nodemmul.out.Output, output, output.in.Input);
+        nodemmul.linkTo(nodemmul.out.Output, output, output.in.input);
         ctx.run();
         let getoutput = yield output.Get;
         console.log(`beautiful ${getoutput}`);

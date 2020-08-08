@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OutPutNode = exports.addNewNode = exports.NodeRuntime = exports.GraphRuntime = void 0;
+exports.InputNode = exports.OutPutNode = exports.addNewNode = exports.NodeRuntime = exports.GraphRuntime = exports.graphConfig = void 0;
 function newPort(tarnode, tarport) {
     return { targetNode: tarnode, targetPort: tarport };
 }
@@ -23,7 +23,7 @@ class GraphConfig {
         };
     }
 }
-const graphConfig = new GraphConfig();
+exports.graphConfig = new GraphConfig();
 class GraphRuntime {
     constructor(name) {
         this.nodesCollection = new Map();
@@ -215,7 +215,7 @@ class NodeRuntime {
             }
         });
         this.run = r;
-        this.name = name || graphConfig.generate_new_id();
+        this.name = name || exports.graphConfig.generate_new_id();
     }
 }
 exports.NodeRuntime = NodeRuntime;
@@ -235,20 +235,25 @@ function addNewNode(context, nodeins) {
     return context.addNewNode(nodeins);
 }
 exports.addNewNode = addNewNode;
-class OutPutNode_ extends NodeRuntime {
+class OutPutNode extends NodeRuntime {
     constructor() {
-        super(...arguments);
-        this.in = { Input: "input" };
+        super((self) => __awaiter(this, void 0, void 0, function* () {
+            self.Get = new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
+                const data = yield self.getFromPort(self.in.input);
+                resolve(data);
+            }));
+        }));
+        this.in = { input: "input" };
     }
 }
-/**
- * Output data to the outside of the graph.
- */
-function OutPutNode() {
-    let nt = new OutPutNode_((self) => __awaiter(this, void 0, void 0, function* () {
-        self.Get = self.getFromPort(self.in.Input);
-    }));
-    return nt;
-}
 exports.OutPutNode = OutPutNode;
+class InputNode extends NodeRuntime {
+    constructor(data) {
+        super((self) => __awaiter(this, void 0, void 0, function* () {
+            self.sendToPort(self.out.output, data);
+        }));
+        this.out = { output: "output" };
+    }
+}
+exports.InputNode = InputNode;
 //# sourceMappingURL=index.js.map

@@ -248,16 +248,24 @@ export function addNewNode<T extends NodeRuntime<T>>(
   return context.addNewNode(nodeins) as T;
 }
 
-class OutPutNode_<T> extends NodeRuntime<OutPutNode_<T>> {
-  Get?: Promise<T>;
-  in = { Input: "input" };
+export class OutPutNode<T> extends NodeRuntime<OutPutNode<T>> {
+  Get: Promise<T>;
+  in = { input: "input" };
+  constructor() {
+    super(async (self: OutPutNode<T>) => {
+      self.Get = new Promise(async (resolve) => {
+        const data = await self.getFromPort<T>(self.in.input);
+        resolve(data);
+      });
+    });
+  }
 }
-/**
- * Output data to the outside of the graph.
- */
-export function OutPutNode<T>() {
-  let nt = new OutPutNode_<T>(async (self: OutPutNode_<T>) => {
-    self.Get = self.getFromPort(self.in.Input);
-  });
-  return nt;
+
+export class InputNode<T> extends NodeRuntime<InputNode<T>> {
+  out = { output: "output" };
+  constructor(data: T) {
+    super(async (self: InputNode<T>) => {
+      self.sendToPort(self.out.output, data);
+    });
+  }
 }

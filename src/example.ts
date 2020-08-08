@@ -13,12 +13,12 @@ async function test() {
   let nodemmul = addNewNode(ctx, CalcNumNode("**"));
   let show = addNewNode(ctx, LogNode());
 
-  let output = addNewNode(ctx, OutPutNode<number>())
+  let output = addNewNode(ctx, new OutPutNode())
 
   node1.linkTo(node1.out.Value, nodemmul, nodemmul.in.A);
   node2.linkTo(node2.out.Value, nodemmul, nodemmul.in.B);
   nodemmul.linkTo(nodemmul.out.Output, show, show.in.Input);
-  nodemmul.linkTo(nodemmul.out.Output, output, output.in.Input)
+  nodemmul.linkTo(nodemmul.out.Output, output, output.in.input)
 
   ctx.run();
 
